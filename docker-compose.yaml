@@ -1,0 +1,23 @@
+version: '3.3'
+services:
+  pir-mqtt:
+    build: .
+    image: buzzer-mqtt-dockerized
+    container_name: buzzer-mqtt-dockerized
+    network_mode: host
+    privileged: true
+    restart: unless-stopped
+    environment:
+      GPIO_PIN: 4
+      BIP_INTERVAL: 300
+      MQTT_TOPIC: "home/alarm"
+      MQTT_HOSTNAME: localhost
+      MQTT_PORT: 1883
+      MQTT_TIMEOUT: 60
+      MQTT_CLIENT_ID: 'buzzer-mqtt'
+      CLIENT_CLEAN_SESSION: 'False'
+      CLIENT_TLS_INSECURE: 'False'
+      MQTT_CLIENT_QOS: '4'
+      MQTT_USERNAME: ''
+      MQTT_PASSWORD: ''
+      LOG_LEVEL: 'info'

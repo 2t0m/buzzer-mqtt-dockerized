@@ -48,28 +48,8 @@ def on_message(client, userdata, message):
     global RING
     if message == 'triggered':
         RING = True
-        ring_the_bell()
     else:
         RING = False
-
-
-def ring_the_bell():
-    try:
-        logging.info("Ring is "+str(RING))
-        GPIO.setmode(GPIO.BCM)
-        while True:
-            if RING:
-                logging.info("ON")
-                GPIO.setup(GPIO_PIN, GPIO.IN)
-                time.sleep(BIP_INTERVAL/1000)
-                
-                GPIO.setup(GPIO_PIN, GPIO.OUT)
-                time.sleep(BIP_INTERVAL/1000)
-            else:
-                logging.info("OFF")
-                break
-    except:
-        logging.info(sys.exc_info()[0])
 
 
 configure_logging()
@@ -93,8 +73,16 @@ client.subscribe(MQTT_TOPIC)
 logging.info("Will ring on PIN "+str(GPIO_PIN)+" with interval of "+str(BIP_INTERVAL)+"ms")
 
 try:
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(GPIO_PIN, GPIO.IN)
     while True:
-        time.sleep(1)
+        if RING:
+            GPIO.setup(GPIO_PIN, GPIO.OUT)
+            time.sleep(BIP_INTERVAL/1000)
+            GPIO.setup(GPIO_PIN, GPIO.IN)
+            time.sleep(BIP_INTERVAL/1000)
+        else:
+            time.sleep(BIP_INTERVAL/1000)
 except Exception as e:
     logging.error(f"Something went wrong and this shouldn't happen... Details: {e}")
 
